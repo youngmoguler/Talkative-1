@@ -10,9 +10,10 @@ import {
 } from "@chatscope/chat-ui-kit-react";
 import "./Chat.css"; // Import the CSS file with the provided styles
 
-const API_KEY = "";
+const API_KEY = "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";
 
 function App() {
+  const [isListening, setIsListening] = useState(false);
   const [typing, setTyping] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -37,6 +38,32 @@ function App() {
     setTyping(true);
     await processMessageToChatGPT(newMessages);
   };
+  useEffect(() => {
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.interimResults = true;
+
+    const onResult = (e) => {
+      const transcript = Array.from(e.results)
+        .map((result) => result[0])
+        .map((result) => result.transcript)
+        .join("");
+
+      // Here, you can set the transcript to your message state
+      // setYourMessageState(transcript);
+    };
+
+    recognition.addEventListener("result", onResult);
+
+    if (isListening) {
+      recognition.start();
+    } else {
+      recognition.stop();
+    }
+
+    return () => {
+      recognition.removeEventListener("result", onResult);
+    };
+  }, [isListening]);
 
   async function processMessageToChatGPT(chatMessages) {
     let apiMessages = chatMessages.map((messageObject) => {
@@ -123,6 +150,9 @@ function App() {
             />
           </ChatContainer>
         </MainContainer>
+        <button onClick={() => setIsListening((prevState) => !prevState)}>
+          {isListening ? "Stop" : "Start"} Listening
+        </button>
       </div>
     </div>
   );
