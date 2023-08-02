@@ -8,9 +8,9 @@ import {
   MessageInput,
   TypingIndicator,
 } from "@chatscope/chat-ui-kit-react";
-import "./Chat.css"; // Import the CSS file with the provided styles
+import "./Chat.css"; 
 
-const API_KEY = "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";
+const API_KEY = "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";
 
 function App() {
   const [isListening, setIsListening] = useState(false);
@@ -43,6 +43,7 @@ function App() {
     recognition.interimResults = true;
 
     const onResult = (e) => {
+
       const transcript = Array.from(e.results)
         .map((result) => result[0])
         .map((result) => result.transcript)
@@ -101,6 +102,10 @@ function App() {
       .then((data) => {
         console.log(data);
         console.log(data.choices[0].message.content);
+        const utterance = new SpeechSynthesisUtterance(data.choices[0].message.content);
+        utterance.rate = 1; 
+        utterance.volume = 1; 
+        speechSynthesis.speak(utterance);
         setMessages([
           ...chatMessages,
           {
