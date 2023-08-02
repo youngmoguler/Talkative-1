@@ -9,9 +9,14 @@ import {
   TypingIndicator,
 } from "@chatscope/chat-ui-kit-react";
 import "./Chat.css"; // Import the CSS file with the provided styles
-
-const API_KEY = "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";
-
+const API_KEY = "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";
+function utterance(say, volume = 1, pitch = 1, rate = 1) {
+  const utter = new SpeechSynthesisUtterance(say);
+  utter.volume = volume;
+  utter.pitch = pitch;
+  utter.rate = rate;
+  return utter;
+}
 function App() {
   const [isListening, setIsListening] = useState(false);
   const [typing, setTyping] = useState(false);
@@ -21,7 +26,7 @@ function App() {
       sender: "ChatGPT",
     },
   ]);
-
+  let tts = speechSynthesis;
   const handleSend = async (message) => {
     const newMessage = {
       message,
@@ -56,6 +61,7 @@ function App() {
 
     if (isListening) {
       recognition.start();
+      tts.cancel();
     } else {
       recognition.stop();
     }
@@ -108,6 +114,8 @@ function App() {
             sender: "ChatGPT",
           },
         ]);
+        tts.resume();
+        tts.speak(utterance(data.choices[0].message.content));
         setTyping(false);
       });
   }
