@@ -10,7 +10,7 @@ import {
 } from "@chatscope/chat-ui-kit-react";
 import "./Chat.css"; 
 
-const API_KEY = "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";
+const API_KEY = "API-KEY";
 
 function App() {
   const [isListening, setIsListening] = useState(false);
