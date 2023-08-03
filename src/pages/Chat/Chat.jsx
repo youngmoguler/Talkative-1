@@ -9,6 +9,9 @@ import {
   TypingIndicator,
 } from "@chatscope/chat-ui-kit-react";
 import "./Chat.css"; // Import the CSS file with the provided styles
+
+import soundFile from "./songs/coffeesong.mp3";
+
 const API_KEY = "";
 function utterance(say, volume = 1, pitch = 1, rate = 1) {
   const utter = new SpeechSynthesisUtterance(say);
@@ -18,6 +21,9 @@ function utterance(say, volume = 1, pitch = 1, rate = 1) {
   return utter;
 }
 function App() {
+  const audioRef = useRef(null);
+  const [volume, setVolume] = useState(0.1);
+  const [isMuted, setIsMuted] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [typing, setTyping] = useState(false);
   const [messages, setMessages] = useState([
@@ -70,6 +76,11 @@ function App() {
       recognition.removeEventListener("result", onResult);
     };
   }, [isListening]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    audio.volume = volume;
+  }, [volume]);
 
   async function processMessageToChatGPT(chatMessages) {
     let apiMessages = chatMessages.map((messageObject) => {
@@ -161,6 +172,16 @@ function App() {
         <button onClick={() => setIsListening((prevState) => !prevState)}>
           {isListening ? "Stop" : "Start"} Listening
         </button>
+        <audio ref={audioRef} src={soundFile} loop />
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={volume}
+          onChange={(e) => setVolume(e.target.value)}
+        />
+        <button onClick={() => audioRef.current.play()}>Play Audio</button>
       </div>
     </div>
   );
