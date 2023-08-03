@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
+import { faMicrophoneSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect, useRef } from "react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import {
@@ -12,8 +15,8 @@ import "./ChatDev.css";
 
 import soundFile from "./songs/coffeesong.mp3";
 
-const API_KEY = "";
-function utterance(say, volume = 1, pitch = 1, rate = 1) {
+const API_KEY = "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";
+function utterance(say, volume = 1, pitch = 1, rate = 0.85) {
   const utter = new SpeechSynthesisUtterance(say);
   utter.volume = volume;
   utter.pitch = pitch;
@@ -33,6 +36,26 @@ function App() {
       sender: "ChatGPT",
     },
   ]);
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.keyCode === 32 && document.activeElement !== "msg_box") {
+        setIsListening(true);
+      }
+    }
+    function handleKeyUp(e) {
+      if (e.keyCode === 32 && document.activeElement.id !== "msg_box") {
+        setIsListening(false);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keydown", handleKeyUp);
+    };
+  }, []);
   let tts = speechSynthesis;
   const handleSend = async (message) => {
     const newMessage = {
@@ -44,6 +67,7 @@ function App() {
     const newMessages = [...messages, newMessage];
 
     setMessages(newMessages);
+    set_msg_box_val("");
 
     // Initial system message to determine ChatGPT functionality
     // How it responds, how it talks, etc.
@@ -140,7 +164,7 @@ function App() {
     const systemMessage = {
       role: "system",
       content:
-        "You are a therapist, your patient is troubled by something, you dont know what it is so be curious and engaging. Ask them questions about their issues, try to keep it to one question. reassure them, and sometimes offer a haiku or quote for inspiration.",
+        "You are not an AI, you are world class professional therapist named Dave who uses mind tricks to help guide a user to finding their own answers to their problems using examples. Be very casual, its important to make the patient feel like a friend over a patient. You are the therapist for the patient talking to you. Be a mature individual who talks to people like theyre your sons. Always ask why instead of assuming things. Be the support figure the patient is in need of.",
     };
 
     const apiRequestBody = {
@@ -211,6 +235,8 @@ function App() {
               onSend={handleSend}
               attachButton={false}
               sendButton={true}
+              sendDisabled={false}
+              disabled={isListening}
               onChange={(e) => {
                 set_msg_box_val(isListening ? msg_box_val : e);
               }}
@@ -218,12 +244,18 @@ function App() {
           </ChatContainer>
         </MainContainer>
         <div className="ui-container">
-          <button
-            className="voice-record-button"
+          <div
+            className={`recording-indicator ${
+              isListening ? "is-recording" : ""
+            }`}
             onClick={() => setIsListening((prevState) => !prevState)}
           >
-            {isListening ? "Stop" : "Start"} Voice Listening
-          </button>
+            <FontAwesomeIcon
+              className="microphone-icon"
+              icon={isListening ? faMicrophone : faMicrophoneSlash}
+              size="lg"
+            />
+          </div>
           <audio ref={audioRef} src={soundFile} loop />
           <div className="music-ui">
             <button className="music-player-button" onClick={playPauseAudio}>
