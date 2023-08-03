@@ -22,10 +22,11 @@ function utterance(say, volume = 1, pitch = 1, rate = 1) {
 }
 function App() {
   const audioRef = useRef(null);
-  const [volume, setVolume] = useState(0.1);
-  const [isMuted, setIsMuted] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [typing, setTyping] = useState(false);
+  const [msg_box_val, set_msg_box_val] = useState("");
+  const [volume, setVolume] = useState(0.1);
+  const [isMuted, setIsMuted] = useState(false);
   const [messages, setMessages] = useState([
     {
       message: "Hey, welcome. Whats on your mind?",
@@ -49,38 +50,47 @@ function App() {
     setTyping(true);
     await processMessageToChatGPT(newMessages);
   };
-  useEffect(() => {
-    const recognition = new window.webkitSpeechRecognition();
-    recognition.interimResults = true;
-
-    const onResult = (e) => {
-      const transcript = Array.from(e.results)
-        .map((result) => result[0])
-        .map((result) => result.transcript)
-        .join("");
-
-      // Here, you can set the transcript to your message state
-      // setYourMessageState(transcript);
-    };
-
-    recognition.addEventListener("result", onResult);
-
-    if (isListening) {
-      recognition.start();
-      tts.cancel();
-    } else {
-      recognition.stop();
-    }
-
-    return () => {
-      recognition.removeEventListener("result", onResult);
-    };
-  }, [isListening]);
 
   useEffect(() => {
     const audio = audioRef.current;
     audio.volume = volume;
   }, [volume]);
+
+  useEffect(() => {
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognition.lang = "eng-US";
+    let full_transcript = [];
+    let full_processed = [];
+    recognition.onstart = () => {
+      console.log(`started`);
+    };
+    recognition.onend = () => {
+      full_processed.push(full_transcript[full_transcript.length - 1]);
+      console.log("Full processed: ", full_processed);
+      set_msg_box_val(full_processed.join(" "));
+      if (isListening) recognition.start();
+    };
+    recognition.onresult = (event) => {
+      const transcript = event.results[event.results.length - 1][0].transcript;
+      full_transcript.push(transcript);
+    };
+    recognition.onerror = (e) => {
+      console.log(`Error: ${e.error}`);
+    };
+    if (isListening) {
+      console.log("Is listening: ", isListening);
+      recognition.start();
+      tts.cancel();
+    } else {
+      recognition.stop();
+    }
+    return () => {
+      recognition.onend = null;
+      recognition.stop();
+    };
+  }, [isListening]);
 
   async function processMessageToChatGPT(chatMessages) {
     let apiMessages = chatMessages.map((messageObject) => {
@@ -125,7 +135,6 @@ function App() {
             sender: "ChatGPT",
           },
         ]);
-        tts.resume();
         tts.speak(utterance(data.choices[0].message.content));
         setTyping(false);
       });
@@ -158,14 +167,19 @@ function App() {
               })}
             </MessageList>
             <MessageInput
+              id="msg_box"
               className="chat-input"
-              placeholder="Empezar a chatear (Start chatting...)"
+              placeholder="Start chatting..."
+              value={msg_box_val}
               style={{
                 "::placeholder": { color: "#d0d0db", important: "true" },
               }}
               onSend={handleSend}
               attachButton={false}
-              sendButton={true} // Set this to true to show the send button
+              sendButton={true}
+              onChange={(e) => {
+                set_msg_box_val(isListening ? msg_box_val : e);
+              }}
             />
           </ChatContainer>
         </MainContainer>
