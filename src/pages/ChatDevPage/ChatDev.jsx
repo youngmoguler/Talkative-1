@@ -8,7 +8,7 @@ import {
   MessageInput,
   TypingIndicator,
 } from "@chatscope/chat-ui-kit-react";
-import "./ChatDev.css"; // Import the CSS file with the provided styles
+import "./ChatDev.css";
 
 import soundFile from "./songs/coffeesong.mp3";
 
@@ -26,7 +26,7 @@ function App() {
   const [typing, setTyping] = useState(false);
   const [msg_box_val, set_msg_box_val] = useState("");
   const [volume, setVolume] = useState(0.1);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [messages, setMessages] = useState([
     {
       message: "Hey, welcome. Whats on your mind?",
@@ -54,7 +54,41 @@ function App() {
   useEffect(() => {
     const audio = audioRef.current;
     audio.volume = volume;
+    audio.onplaying = () => {
+      setIsPlaying(true);
+    };
+    audio.onpause = () => {
+      setIsPlaying(false);
+    };
+    audio.onended = () => {
+      setIsPlaying(false);
+    };
   }, [volume]);
+
+  const playPauseAudio = () => {
+    const audio = audioRef.current;
+    if (isPlaying) {
+      const fadeAudio = setInterval(function () {
+        if (audio.volume > 0.01) {
+          audio.volume -= 0.01;
+        } else {
+          audio.pause();
+          audio.volume = volume;
+          clearInterval(fadeAudio);
+        }
+      }, 20);
+    } else {
+      audio.volume = 0;
+      audio.play();
+      const fadeAudio = setInterval(function () {
+        if (audio.volume < volume) {
+          audio.volume += 0.01;
+        } else {
+          clearInterval(fadeAudio);
+        }
+      }, 20);
+    }
+  };
 
   useEffect(() => {
     const recognition = new window.webkitSpeechRecognition();
@@ -183,19 +217,30 @@ function App() {
             />
           </ChatContainer>
         </MainContainer>
-        <button onClick={() => setIsListening((prevState) => !prevState)}>
-          {isListening ? "Stop" : "Start"} Listening
-        </button>
-        <audio ref={audioRef} src={soundFile} loop />
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          value={volume}
-          onChange={(e) => setVolume(e.target.value)}
-        />
-        <button onClick={() => audioRef.current.play()}>Play Audio</button>
+        <div className="ui-container">
+          <button
+            className="voice-record-button"
+            onClick={() => setIsListening((prevState) => !prevState)}
+          >
+            {isListening ? "Stop" : "Start"} Voice Listening
+          </button>
+          <audio ref={audioRef} src={soundFile} loop />
+          <div className="music-ui">
+            <button className="music-player-button" onClick={playPauseAudio}>
+              {isPlaying ? "Turn off Jazz" : "Smooth Jazz"}
+            </button>
+            |
+            <input
+              className="music-volume-slider"
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={volume}
+              onChange={(e) => setVolume(e.target.value)}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

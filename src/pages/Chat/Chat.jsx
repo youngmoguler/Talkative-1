@@ -8,7 +8,7 @@ import {
   MessageInput,
   TypingIndicator,
 } from "@chatscope/chat-ui-kit-react";
-import "./Chat.css"; // Import the CSS file with the provided styles
+import "./Chat.css";
 
 import soundFile from "./songs/coffeesong.mp3";
 
