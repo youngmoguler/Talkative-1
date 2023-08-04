@@ -4,8 +4,6 @@ import {
   faMicrophoneSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
-import { faCogs } from "@fortawesome/free-solid-svg-icons";
-
 import * as userService from "../../utilities/users-service";
 import { useState, useEffect, useRef } from "react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
@@ -22,26 +20,7 @@ import "./ChatDev.css";
 import soundFile from "./songs/coffeesong.mp3";
 
 const API_KEY = "";
-function utterance(
-  say,
-  volume = 1,
-  pitch = 1,
-  rate = 1,
-  voice = "Microsoft David - English (United States)"
-) {
-  const voices = window.speechSynthesis.getVoices();
-  const utter = new SpeechSynthesisUtterance(say);
-  utter.volume = volume;
-  utter.pitch = pitch;
-  utter.rate = rate;
-  for (let i = 0; i < voices.length; i++) {
-    if (voices[i].name === voice) {
-      utter.voice = voices[i];
-      break;
-    }
-  }
-  return utter;
-}
+
 function App({ user, setUser }) {
   const audioRef = useRef(null);
   const [isListening, setIsListening] = useState(false);
@@ -62,7 +41,20 @@ function App({ user, setUser }) {
       sender: "ChatGPT",
     },
   ]);
-
+  function utterance(content) {
+    const voices = window.speechSynthesis.getVoices();
+    const utter = new SpeechSynthesisUtterance(content);
+    utter.volume = speakVolume;
+    utter.pitch = speakPitch;
+    utter.rate = speakRate;
+    for (let i = 0; i < voices.length; i++) {
+      if (voices[i].name === speakVoice) {
+        utter.voice = voices[i];
+        break;
+      }
+    }
+    return utter;
+  }
   useEffect(() => {
     function handleKeyDown(e) {
       if (e.keyCode === 32 && document.activeElement !== "msg_box") {
@@ -143,9 +135,15 @@ function App({ user, setUser }) {
 
   useEffect(() => {
     const recognition = new window.webkitSpeechRecognition();
+    const findVoiceIndex = speechSynthesis
+      .getVoices()
+      .findIndex((voice) => voice.voiceURI === speakVoice);
+    recognition.lang =
+      findVoiceIndex === -1
+        ? "en-US"
+        : speechSynthesis.getVoices()[findVoiceIndex].lang;
     recognition.interimResults = true;
     recognition.continuous = false;
-    recognition.lang = "eng-US";
     let full_transcript = [];
     let full_processed = [];
     recognition.onstart = () => {
@@ -218,13 +216,8 @@ function App({ user, setUser }) {
             sender: "ChatGPT",
           },
         ]);
-        tts.speak(
-          utterance(data.choices[0].message.content),
-          speakVolume,
-          speakPitch,
-          speakRate,
-          speakVoice
-        );
+
+        tts.speak(utterance(data.choices[0].message.content));
         setTyping(false);
       });
   }
@@ -240,42 +233,89 @@ function App({ user, setUser }) {
               <li>
                 <label htmlFor="volume">Volume:</label>
                 <input
-                  step="0.1"
+                  step="0.01"
                   name="volume"
                   type="range"
                   min="0"
                   max="1"
                   value={speakVolume}
                   onChange={(e) => {
-                    setSpeakVolume(e.target.value);
+                    setSpeakVolume(parseFloat(e.target.value));
+                    console.log(
+                      "Volume:",
+                      e.target.value,
+                      "Type:",
+                      typeof e.target.value,
+                      "useState:",
+                      speakVolume,
+                      "State Type:",
+                      typeof speakVolume,
+                      "isFinite && isFloat?",
+                      [
+                        isFinite(speakVolume),
+                        Number(speakVolume) === speakVolume &&
+                          speakVolume % 1 !== 0,
+                      ]
+                    );
                   }}
                 />
               </li>
               <li>
                 <label htmlFor="pitch">Pitch:</label>
                 <input
-                  step="0.1"
+                  step="0.01"
                   name="pitch"
                   type="range"
                   min="0"
                   max="2"
                   value={speakPitch}
                   onChange={(e) => {
-                    setSpeakPitch(e.target.value);
+                    setSpeakPitch(parseFloat(e.target.value));
+                    console.log(
+                      "Pitch:",
+                      e.target.value,
+                      "Type:",
+                      typeof e.target.value,
+                      "useState:",
+                      speakPitch,
+                      "State Type:",
+                      typeof speakPitch,
+                      "isFinite && isFloat?",
+                      [
+                        isFinite(speakPitch),
+                        Number(speakPitch) === speakPitch &&
+                          speakPitch % 1 !== 0,
+                      ]
+                    );
                   }}
                 />
               </li>
               <li>
-                <label htmlFor="rate">Rate:</label>
+                <label htmlFor="Rate">Rate:</label>
                 <input
-                  step="0.1"
+                  step="0.01"
                   name="rate"
                   type="range"
                   min="0.1"
                   max="10"
                   value={speakRate}
                   onChange={(e) => {
-                    setSpeakRate(e.target.value);
+                    setSpeakRate(parseFloat(e.target.value));
+                    console.log(
+                      "Rate:",
+                      e.target.value,
+                      "Type:",
+                      typeof e.target.value,
+                      "useState:",
+                      speakRate,
+                      "State Type:",
+                      typeof speakRate,
+                      "isFinite && isFloat?",
+                      [
+                        isFinite(speakRate),
+                        Number(speakRate) === speakRate && speakRate % 1 !== 0,
+                      ]
+                    );
                   }}
                 />
               </li>
@@ -305,7 +345,10 @@ function App({ user, setUser }) {
           className="settings-button"
           icon={faCog}
           size="lg"
-          onClick={() => setShowSettings(!showSettings)}
+          onClick={() => {
+            setShowSettings(!showSettings);
+            console.log(speakVolume, speakPitch, speakRate, speakVoice);
+          }}
         />
         <MainContainer>
           <ChatContainer className="chat-container">
@@ -313,7 +356,9 @@ function App({ user, setUser }) {
               className="chat-history !important"
               scrollBehavior="smooth"
               typingIndicator={
-                typing ? <TypingIndicator content="ChatGPT is typing" /> : null
+                typing ? (
+                  <TypingIndicator content="Therapist responding" />
+                ) : null
               }
             >
               {messages.map((message, i) => {
