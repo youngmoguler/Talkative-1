@@ -1,6 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
-import { faMicrophoneSlash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMicrophone,
+  faMicrophoneSlash,
+} from "@fortawesome/free-solid-svg-icons";
+import { faCog } from "@fortawesome/free-solid-svg-icons";
+import { faCogs } from "@fortawesome/free-solid-svg-icons";
+
+import * as userService from "../../utilities/users-service";
 import { useState, useEffect, useRef } from "react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import {
@@ -15,24 +21,44 @@ import "./ChatDev.css";
 
 import soundFile from "./songs/coffeesong.mp3";
 
-const API_KEY = "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";
-function utterance(say, volume = 1, pitch = 1, rate = 0.85) {
+const API_KEY = "";
+function utterance(
+  say,
+  volume = 1,
+  pitch = 1,
+  rate = 1,
+  voice = "Microsoft David - English (United States)"
+) {
+  const voices = window.speechSynthesis.getVoices();
   const utter = new SpeechSynthesisUtterance(say);
   utter.volume = volume;
   utter.pitch = pitch;
   utter.rate = rate;
+  for (let i = 0; i < voices.length; i++) {
+    if (voices[i].name === voice) {
+      utter.voice = voices[i];
+      break;
+    }
+  }
   return utter;
 }
-function App() {
+function App({ user, setUser }) {
   const audioRef = useRef(null);
   const [isListening, setIsListening] = useState(false);
   const [typing, setTyping] = useState(false);
   const [msg_box_val, set_msg_box_val] = useState("");
   const [volume, setVolume] = useState(0.1);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+
+  const [speakPitch, setSpeakPitch] = useState(1);
+  const [speakVolume, setSpeakVolume] = useState(1);
+  const [speakRate, setSpeakRate] = useState(1);
+  const [speakVoice, setSpeakVoice] = useState("en-US");
+
   const [messages, setMessages] = useState([
     {
-      message: "Hey, welcome. Whats on your mind?",
+      message: `Hey ${user.name}, whats on your mind?`,
       sender: "ChatGPT",
     },
   ]);
@@ -57,6 +83,7 @@ function App() {
     };
   }, []);
   let tts = speechSynthesis;
+  const voices = window.speechSynthesis.getVoices();
   const handleSend = async (message) => {
     const newMessage = {
       message,
@@ -184,8 +211,6 @@ function App() {
         return data.json();
       })
       .then((data) => {
-        console.log(data);
-        console.log(data.choices[0].message.content);
         setMessages([
           ...chatMessages,
           {
@@ -193,14 +218,95 @@ function App() {
             sender: "ChatGPT",
           },
         ]);
-        tts.speak(utterance(data.choices[0].message.content));
+        tts.speak(
+          utterance(data.choices[0].message.content),
+          speakVolume,
+          speakPitch,
+          speakRate,
+          speakVoice
+        );
         setTyping(false);
       });
   }
 
   return (
     <div className="App">
+      {showSettings && (
+        <div className="settings">
+          <div>
+            <h1>Text to Speech Config</h1>
+            <hr className="solid" />
+            <ul className="tts-settings-container">
+              <li>
+                <label htmlFor="volume">Volume:</label>
+                <input
+                  step="0.1"
+                  name="volume"
+                  type="range"
+                  min="0"
+                  max="1"
+                  value={speakVolume}
+                  onChange={(e) => {
+                    setSpeakVolume(e.target.value);
+                  }}
+                />
+              </li>
+              <li>
+                <label htmlFor="pitch">Pitch:</label>
+                <input
+                  step="0.1"
+                  name="pitch"
+                  type="range"
+                  min="0"
+                  max="2"
+                  value={speakPitch}
+                  onChange={(e) => {
+                    setSpeakPitch(e.target.value);
+                  }}
+                />
+              </li>
+              <li>
+                <label htmlFor="rate">Rate:</label>
+                <input
+                  step="0.1"
+                  name="rate"
+                  type="range"
+                  min="0.1"
+                  max="10"
+                  value={speakRate}
+                  onChange={(e) => {
+                    setSpeakRate(e.target.value);
+                  }}
+                />
+              </li>
+              <li>
+                <select
+                  value={speakVoice}
+                  onChange={(e) => {
+                    setSpeakVoice(e.target.value);
+                  }}
+                >
+                  {voices.map((voice, index) => {
+                    return (
+                      <option key={index} value={voice.voiceURI}>
+                        {voice.name}
+                      </option>
+                    );
+                  })}
+                </select>
+              </li>
+            </ul>
+          </div>
+        </div>
+      )}
+
       <div className="chat-backdrop">
+        <FontAwesomeIcon
+          className="settings-button"
+          icon={faCog}
+          size="lg"
+          onClick={() => setShowSettings(!showSettings)}
+        />
         <MainContainer>
           <ChatContainer className="chat-container">
             <MessageList
@@ -261,7 +367,7 @@ function App() {
             <button className="music-player-button" onClick={playPauseAudio}>
               {isPlaying ? "Turn off Jazz" : "Smooth Jazz"}
             </button>
-            |
+
             <input
               className="music-volume-slider"
               type="range"

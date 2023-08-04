@@ -222,3 +222,34 @@
 .recording-indicator.is-recording::before {
   background-color: rgba(255, 0, 0, 0.3);
 }
+.settings {
+  position: absolute;
+  min-width: 800px;
+  min-height: 700px;
+  backdrop-filter: blur(25px);
+  background: rgba(255, 0, 0, 0.3);
+  border-radius: 50px;
+  text-align: left;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  z-index: 4;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.settings-button {
+  position: absolute;
+  z-index: 5;
+  top: 50px;
+  right: 50px;
+}
+
+.tts-settings-container {
+  padding: 1rem;
+}
+/* Solid border */
+hr.solid {
+  border-top: 1px solid rgba(0, 0, 0, 0.3);
+}
