@@ -1,10 +1,12 @@
+//FONT AWESOME ICONS
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMicrophone,
   faMicrophoneSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
-import * as userService from "../../utilities/users-service";
+
+// CHATBOX IMPORTS
 import { useState, useEffect, useRef } from "react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import {
@@ -17,8 +19,13 @@ import {
 } from "@chatscope/chat-ui-kit-react";
 import "./ChatDev.css";
 
+//BACKGROUND MUSIC
 import soundFile from "./songs/coffeesong.mp3";
 
+//THREE.JS SCENE
+import Scene from "../../components/Scene/Scene";
+
+//API KEYS
 const API_KEY = "";
 
 function App({ user, setUser }) {
@@ -54,6 +61,9 @@ function App({ user, setUser }) {
       }
     }
     return utter;
+  }
+  function logOut() {
+    localStorage.removeItem("token");
   }
   useEffect(() => {
     function handleKeyDown(e) {
@@ -223,205 +233,177 @@ function App({ user, setUser }) {
   }
 
   return (
-    <div className="App">
-      {showSettings && (
-        <div className="settings">
-          <div>
-            <h1>Text to Speech Config</h1>
-            <hr className="solid" />
-            <ul className="tts-settings-container">
-              <li>
-                <label htmlFor="volume">Volume:</label>
-                <input
-                  step="0.01"
-                  name="volume"
-                  type="range"
-                  min="0"
-                  max="1"
-                  value={speakVolume}
-                  onChange={(e) => {
-                    setSpeakVolume(parseFloat(e.target.value));
-                    console.log(
-                      "Volume:",
-                      e.target.value,
-                      "Type:",
-                      typeof e.target.value,
-                      "useState:",
-                      speakVolume,
-                      "State Type:",
-                      typeof speakVolume,
-                      "isFinite && isFloat?",
-                      [
-                        isFinite(speakVolume),
-                        Number(speakVolume) === speakVolume &&
-                          speakVolume % 1 !== 0,
-                      ]
-                    );
-                  }}
-                />
-              </li>
-              <li>
-                <label htmlFor="pitch">Pitch:</label>
-                <input
-                  step="0.01"
-                  name="pitch"
-                  type="range"
-                  min="0"
-                  max="2"
-                  value={speakPitch}
-                  onChange={(e) => {
-                    setSpeakPitch(parseFloat(e.target.value));
-                    console.log(
-                      "Pitch:",
-                      e.target.value,
-                      "Type:",
-                      typeof e.target.value,
-                      "useState:",
-                      speakPitch,
-                      "State Type:",
-                      typeof speakPitch,
-                      "isFinite && isFloat?",
-                      [
-                        isFinite(speakPitch),
-                        Number(speakPitch) === speakPitch &&
-                          speakPitch % 1 !== 0,
-                      ]
-                    );
-                  }}
-                />
-              </li>
-              <li>
-                <label htmlFor="Rate">Rate:</label>
-                <input
-                  step="0.01"
-                  name="rate"
-                  type="range"
-                  min="0.1"
-                  max="10"
-                  value={speakRate}
-                  onChange={(e) => {
-                    setSpeakRate(parseFloat(e.target.value));
-                    console.log(
-                      "Rate:",
-                      e.target.value,
-                      "Type:",
-                      typeof e.target.value,
-                      "useState:",
-                      speakRate,
-                      "State Type:",
-                      typeof speakRate,
-                      "isFinite && isFloat?",
-                      [
-                        isFinite(speakRate),
-                        Number(speakRate) === speakRate && speakRate % 1 !== 0,
-                      ]
-                    );
-                  }}
-                />
-              </li>
-              <li>
-                <select
-                  value={speakVoice}
-                  onChange={(e) => {
-                    setSpeakVoice(e.target.value);
-                  }}
-                >
-                  {voices.map((voice, index) => {
-                    return (
-                      <option key={index} value={voice.voiceURI}>
-                        {voice.name}
-                      </option>
-                    );
-                  })}
-                </select>
-              </li>
-            </ul>
-          </div>
-        </div>
-      )}
-
-      <div className="chat-backdrop">
-        <FontAwesomeIcon
-          className="settings-button"
-          icon={faCog}
-          size="lg"
-          onClick={() => {
-            setShowSettings(!showSettings);
-            console.log(speakVolume, speakPitch, speakRate, speakVoice);
-          }}
-        />
-        <MainContainer>
-          <ChatContainer className="chat-container">
-            <MessageList
-              className="chat-history !important"
-              scrollBehavior="smooth"
-              typingIndicator={
-                typing ? (
-                  <TypingIndicator content="Therapist responding" />
-                ) : null
-              }
-            >
-              {messages.map((message, i) => {
-                const messageClassName =
-                  message.sender === "user"
-                    ? "user-message"
-                    : "assistant-message";
-                return (
-                  <Message
-                    key={i}
-                    model={message}
-                    className={messageClassName}
+    <div>
+      <Scene />
+      <div className="App" style={{ position: "relative" }}>
+        {showSettings && (
+          <div className="settings">
+            <div>
+              <h1>Settings</h1>
+              <hr className="solid" />
+              <ul className="settings-container">
+                <li>
+                  <h1
+                    class="title"
+                    style={{
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Text to Speech Config
+                  </h1>
+                  <label htmlFor="volume">Volume: {speakVolume}</label>
+                  <input
+                    step="0.01"
+                    name="volume"
+                    type="range"
+                    min="0"
+                    max="1"
+                    value={speakVolume}
+                    onChange={(e) => {
+                      setSpeakVolume(parseFloat(e.target.value));
+                    }}
                   />
-                );
-              })}
-            </MessageList>
-            <MessageInput
-              id="msg_box"
-              className="chat-input"
-              placeholder="Start chatting..."
-              value={msg_box_val}
-              style={{
-                "::placeholder": { color: "#d0d0db", important: "true" },
-              }}
-              onSend={handleSend}
-              attachButton={false}
-              sendButton={true}
-              sendDisabled={false}
-              disabled={isListening}
-              onChange={(e) => {
-                set_msg_box_val(isListening ? msg_box_val : e);
-              }}
-            />
-          </ChatContainer>
-        </MainContainer>
-        <div className="ui-container">
-          <div
-            className={`recording-indicator ${
-              isListening ? "is-recording" : ""
-            }`}
-            onClick={() => setIsListening((prevState) => !prevState)}
-          >
-            <FontAwesomeIcon
-              className="microphone-icon"
-              icon={isListening ? faMicrophone : faMicrophoneSlash}
-              size="lg"
-            />
+                </li>
+                <li>
+                  <label htmlFor="pitch">Pitch: {speakPitch}</label>
+                  <input
+                    step="0.01"
+                    name="pitch"
+                    type="range"
+                    min="0"
+                    max="2"
+                    value={speakPitch}
+                    onChange={(e) => {
+                      setSpeakPitch(parseFloat(e.target.value));
+                    }}
+                  />
+                </li>
+                <li>
+                  <label htmlFor="Rate">Rate: {speakRate}</label>
+                  <input
+                    step="0.01"
+                    name="rate"
+                    type="range"
+                    min="0.1"
+                    max="10"
+                    value={speakRate}
+                    onChange={(e) => {
+                      setSpeakRate(parseFloat(e.target.value));
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>Language</label>
+                  <select
+                    value={speakVoice}
+                    onChange={(e) => {
+                      setSpeakVoice(e.target.value);
+                    }}
+                  >
+                    {voices.map((voice, index) => {
+                      return (
+                        <option key={index} value={voice.voiceURI}>
+                          {voice.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </li>
+              </ul>
+              <button
+                onClick={() => {
+                  logOut();
+                  window.location.reload();
+                }}
+              >
+                Log Out{" "}
+              </button>
+            </div>
           </div>
-          <audio ref={audioRef} src={soundFile} loop />
-          <div className="music-ui">
-            <button className="music-player-button" onClick={playPauseAudio}>
-              {isPlaying ? "Turn off Jazz" : "Smooth Jazz"}
-            </button>
+        )}
 
-            <input
-              className="music-volume-slider"
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={volume}
-              onChange={(e) => setVolume(e.target.value)}
-            />
+        <div className="chat-backdrop">
+          <FontAwesomeIcon
+            className={`settings-button`}
+            icon={faCog}
+            size="lg"
+            onClick={() => {
+              setShowSettings(!showSettings);
+            }}
+          />
+          <MainContainer>
+            <ChatContainer className="chat-container">
+              <MessageList
+                className="chat-history !important"
+                scrollBehavior="smooth"
+                typingIndicator={
+                  typing ? (
+                    <TypingIndicator content="Therapist responding" />
+                  ) : null
+                }
+              >
+                {messages.map((message, i) => {
+                  const messageClassName =
+                    message.sender === "user"
+                      ? "user-message"
+                      : "assistant-message";
+                  return (
+                    <Message
+                      key={i}
+                      model={message}
+                      className={messageClassName}
+                    />
+                  );
+                })}
+              </MessageList>
+              <MessageInput
+                id="msg_box"
+                className="chat-input"
+                placeholder="Start chatting..."
+                value={msg_box_val}
+                style={{
+                  "::placeholder": { color: "#d0d0db", important: "true" },
+                }}
+                onSend={handleSend}
+                attachButton={false}
+                sendButton={true}
+                sendDisabled={false}
+                disabled={isListening}
+                onChange={(e) => {
+                  set_msg_box_val(isListening ? msg_box_val : e);
+                }}
+              />
+            </ChatContainer>
+          </MainContainer>
+          <div className="ui-container">
+            <div
+              className={`recording-indicator ${
+                isListening ? "is-recording" : ""
+              }`}
+              onClick={() => setIsListening((prevState) => !prevState)}
+            >
+              <FontAwesomeIcon
+                className="microphone-icon"
+                icon={isListening ? faMicrophone : faMicrophoneSlash}
+                size="lg"
+              />
+            </div>
+            <audio ref={audioRef} src={soundFile} loop />
+            <div className="music-ui">
+              <button className="music-player-button" onClick={playPauseAudio}>
+                {isPlaying ? "Turn off Jazz" : "Smooth Jazz"}
+              </button>
+
+              <input
+                className="music-volume-slider"
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={volume}
+                onChange={(e) => setVolume(e.target.value)}
+              />
+            </div>
           </div>
         </div>
       </div>

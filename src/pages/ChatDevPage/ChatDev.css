@@ -80,7 +80,8 @@
   background-color: #40414f !important;
 }
 .chat-backdrop {
-  background-color: #40414f !important;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
 }
 .cs-main-container .cs-chat-container {
   order: 1 !important;
@@ -234,7 +235,7 @@
   flex-direction: row;
   justify-content: space-around;
   z-index: 4;
-  top: 40%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -246,10 +247,28 @@
   right: 50px;
 }
 
-.tts-settings-container {
+.settings-container {
+  border-bottom: 2px solid white;
   padding: 1rem;
 }
+.settings-container li {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Solid border */
 hr.solid {
   border-top: 1px solid rgba(0, 0, 0, 0.3);
+}
+@keyframes rotating {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.settings-button.rotate-icon {
+  animation: rotate 0.5s ease-in-out;
 }
