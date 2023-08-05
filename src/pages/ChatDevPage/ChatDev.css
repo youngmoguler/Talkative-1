@@ -10,7 +10,7 @@
   box-sizing: border-box !important;
 }
 .chat-history {
-  background: #434654 !important;
+  background: rgba(255, 255, 255, 0.3) !important;
   overflow-y: auto !important;
   height: 80% !important;
   padding: 1em !important;
@@ -23,7 +23,7 @@
   bottom: 70px !important;
   width: 60% !important;
   border-radius: 25px !important;
-  background-color: #40414f !important;
+  background: rgba(255, 255, 255, 0.3) !important;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16) !important;
   display: flex !important;
   align-items: center !important;
@@ -34,7 +34,7 @@
   transform: translateX(-50%) !important;
 }
 .chat-input form {
-  background: #40414f !important;
+  background: transparent !important;
   display: flex !important;
   height: 100% !important;
   width: 100% !important;
@@ -48,7 +48,7 @@
   margin-right: 1em !important;
   font-size: 1em !important;
   outline: none !important;
-  background: #40414f !important;
+  background: rgba(255, 255, 255, 0.3) !important;
   color: #c1c1c8 !important;
 }
 .chat-input button {
@@ -69,32 +69,34 @@
 .user-message {
   margin: 10px !important;
   padding: 10px !important;
-  border-radius: 5px !important;
-  background-color: #40414f !important;
+  border-radius: 15px !important;
+  background: transparent !important;
+  border: 1px solid rgba(41, 44, 49, 0.3);
   text-align: right !important;
 }
 .assistant-message {
   margin: 10px !important;
   padding: 10px !important;
-  border-radius: 5px !important;
-  background-color: #40414f !important;
+  border-radius: 15px !important;
+  border: 1px solid rgba(41, 44, 49, 0.3);
+  background: transparent !important;
 }
 .chat-backdrop {
-  background-color: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(15px);
+  background: transparent !important;
+  backdrop-filter: blur(5px);
 }
 .cs-main-container .cs-chat-container {
   order: 1 !important;
   z-index: 1 !important;
   flex-grow: 1 !important;
   flex-basis: 65% !important;
-  background: #333641 !important;
+  background: transparent !important;
   border-radius: 15px;
 }
 .cs-message__content {
   box-sizing: border-box !important;
   color: #c1c1c8 !important;
-  background-color: #434654 !important;
+  background: transparent !important;
   margin-top: 0 !important;
   padding: 0.6em 0.9em !important;
   border-radius: 0.7em !important;
@@ -116,7 +118,7 @@
   border: solid 0px #d1dbe3 !important;
   box-sizing: border-box !important;
   color: rgba(0, 0, 0, 0.87) !important;
-  background-color: #353641 !important;
+  background: transparent !important;
   font-size: 1rem !important;
 }
 .cs-typing-indicator {
@@ -126,7 +128,7 @@
   display: flex !important;
   flex-direction: row !important;
   align-items: stretch !important;
-  background: #757575 !important;
+  background: rgba(255, 255, 255, 0.3) !important;
 }
 .cs-typing-indicator__text {
   box-sizing: inherit !important;
@@ -142,7 +144,7 @@
 .cs-message-input__content-editor {
   box-sizing: border-box !important;
   flex-grow: 1 !important;
-  background-color: #40414f !important;
+  background: rgba(255, 255, 255, 0.3) !important;
   font-family: Helvetica Neue, Segoe UI, Helvetica, Arial, sans-serif !important;
   outline: 0 !important;
   border-top: none !important;
@@ -154,10 +156,15 @@
   overflow-wrap: anywhere !important;
   word-break: break-word !important;
 }
+.cs-message-input__content-editor::before {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
 .cs-message-input__content-editor-wrapper {
   box-sizing: border-box !important;
   position: relative !important;
-  background-color: #40414f !important;
+  background: transparent !important;
   margin: 0 !important;
   padding: 0.6em 0.9em !important;
   border-radius: 0.7em !important;
@@ -169,7 +176,7 @@
 .cs-message-input__content-editor[data-placeholder]:empty:before {
   box-sizing: border-box !important;
   content: attr(data-placeholder) !important;
-  color: #d1dbe385 !important;
+  color: transparent !important;
   display: block !important;
   cursor: text !important;
 }
@@ -227,7 +234,8 @@
   position: absolute;
   min-width: 800px;
   min-height: 700px;
-  backdrop-filter: blur(25px);
+  backdrop-filter: blur(15px);
+  color: rgb(28, 28, 28);
   background: rgba(255, 0, 0, 0.3);
   border-radius: 50px;
   text-align: left;
@@ -271,4 +279,8 @@ hr.solid {
 
 .settings-button.rotate-icon {
   animation: rotate 0.5s ease-in-out;
+}
+.scrollbar-container cs-message-input__content-editor-container ps {
+  background-color: transparent !important;
+  background: transparent !important;
 }

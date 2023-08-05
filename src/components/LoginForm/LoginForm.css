@@ -1,7 +1,6 @@
 /* LoginForm.css */
 .form-container {
   position: relative;
-
   background-color: rgba(255, 255, 255, 0.1);
   padding: 1.5rem 1rem;
   border-radius: 0.5rem;
@@ -34,17 +33,19 @@
   width: 100%;
   margin-top: 1rem;
   padding: 0.75rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
+  background-color: rgba(126, 242, 255, 0.353);
+  color: black;
   border: none;
   border-radius: 0.25rem;
   outline: none;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, border 0.3s, border-radius 0.3s, color 0.3s;
 }
 
 .submit-button:hover {
   background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid black;
+  border-radius: 15px;
   color: black;
 }
 

@@ -1,4 +1,11 @@
 /* LoginForm.css */
+:root {
+  --warm-peach: #f9dac4;
+  --warm-rose: #e89a97;
+  --warm-tomato: #e75948;
+  --warm-sun: #e75948;
+}
+
 .form-container {
   position: relative;
 
@@ -30,23 +37,9 @@
   border-color: #3498db;
 }
 
-.submit-button {
-  display: block;
-  width: 100%;
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: none;
-  border-radius: 0.25rem;
-  outline: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
 .submit-button:hover {
   background-color: rgba(255, 255, 255, 0.8);
-  color: black;
+  color: green;
 }
 
 .error-message {

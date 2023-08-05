@@ -3,7 +3,7 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 body {
-  background: #343541;
+  background: transparent;
   color: #c1c1c8;
   font-family: "Nunito", sans-serif;
 }
