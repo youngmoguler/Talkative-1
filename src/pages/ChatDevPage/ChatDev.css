@@ -1,6 +1,13 @@
 /* ChatDev.css */
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
-
+:root {
+  --light-text-100: #b9bec7;
+  --light-text-200: #8d9096;
+  --warm-peach: #f9dac4;
+  --warm-sun: #feaf34;
+  --warm-rose: #e89a97;
+  --warm-tomato: #e75948;
+}
 .chat-container {
   display: flex !important;
   flex-direction: column !important;
@@ -48,12 +55,20 @@
   margin-right: 1em !important;
   font-size: 1em !important;
   outline: none !important;
-  background: rgba(255, 255, 255, 0.3) !important;
+  background: transparent !important;
+  background-color: transparent !important;
   color: #c1c1c8 !important;
+}
+.cs-message-input__content-editor {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+.cs-message-input__content-editor-container {
+  background-color: transparent !important;
 }
 .chat-input button {
   padding: 0.5em 1em !important;
-  background-color: #7a3dd6 !important;
+  background-color: var(--warm-rose) !important;
   color: white !important;
   border: none !important;
   border-radius: 20px !important;
@@ -64,7 +79,8 @@
   bottom: 8px !important;
 }
 .chat-input button:hover {
-  background-color: #0056b3 !important;
+  background-color: var(--warm-tomato) !important;
+  opacity: 1;
 }
 .user-message {
   margin: 10px !important;
@@ -283,4 +299,13 @@ hr.solid {
 .scrollbar-container cs-message-input__content-editor-container ps {
   background-color: transparent !important;
   background: transparent !important;
+}
+/* MessageInput.css */
+/* MessageInput.css */
+.cs-message-input__content-editor[data-placeholder]:empty:before {
+  box-sizing: border-box !important;
+  content: attr(data-placeholder) !important;
+  color: var(--light-text-200) !important;
+  display: block !important;
+  cursor: text !important;
 }

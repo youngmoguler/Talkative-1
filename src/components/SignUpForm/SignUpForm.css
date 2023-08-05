@@ -1,9 +1,11 @@
 /* LoginForm.css */
 :root {
+  --light-text-100: #b9bec7;
+  --light-text-200: #8d9096;
   --warm-peach: #f9dac4;
+  --warm-sun: #feaf34;
   --warm-rose: #e89a97;
   --warm-tomato: #e75948;
-  --warm-sun: #e75948;
 }
 
 .form-container {
@@ -17,19 +19,6 @@
   margin: 0 auto;
 }
 
-.input-field {
-  background-color: transparent;
-  display: block;
-  color: white;
-  width: 95%;
-  margin-top: 0.25rem;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 0.25rem;
-  outline: none;
-  transition: border-color 0.3s;
-  margin-bottom: 1rem;
-}
 #password-input {
   margin-top: 2rem;
 }

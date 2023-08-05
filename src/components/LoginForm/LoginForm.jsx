@@ -29,9 +29,10 @@ export default function LoginForm({ setUser }) {
   }
 
   return (
-    <div>
-      <div className="form-container">
-        <form autoComplete="off" onSubmit={handleSubmit}>
+    <div className="form-container">
+      <div className="blur-box"></div>
+      <form autoComplete="off" onSubmit={handleSubmit}>
+        <div className="form-item-container">
           <label id="email-id">Email</label>
           <input
             className="input-field"
@@ -56,8 +57,8 @@ export default function LoginForm({ setUser }) {
           <button type="submit" className="submit-button">
             LOG IN
           </button>
-        </form>
-      </div>
+        </div>
+      </form>
       <p className="error-message">&nbsp;{error}</p>
     </div>
   );

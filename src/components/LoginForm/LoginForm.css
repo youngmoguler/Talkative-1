@@ -1,4 +1,21 @@
 /* LoginForm.css */
+
+:root {
+  --light-text-100: #b9bec7;
+  --light-text-200: #8d9096;
+  --warm-peach: #f9dac4;
+  --warm-sun: #feaf34;
+  --warm-rose: #e89a97;
+  --warm-tomato: #e75948;
+}
+.blur-box {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  width: 60vw;
+  height: 75vh;
+  z-index: -2;
+}
 .form-container {
   position: relative;
   background-color: rgba(255, 255, 255, 0.1);
@@ -6,13 +23,13 @@
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-width: 400px;
-  margin: 0 auto;
+  margin: 10rem auto 0rem auto;
 }
 
 .input-field {
   background-color: transparent;
   display: block;
-  color: white;
+  color: var(--light-text-200);
   width: 95%;
   margin-top: 0.25rem;
   padding: 0.5rem;
@@ -27,14 +44,21 @@
 .input-field:focus {
   border-color: #3498db;
 }
-
+.form-item-container {
+  margin-top: 10rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto;
+}
 .submit-button {
   display: block;
   width: 100%;
   margin-top: 1rem;
   padding: 0.75rem;
-  background-color: rgba(126, 242, 255, 0.353);
-  color: black;
+  background-color: var(--warm-rose);
+  color: white;
   border: none;
   border-radius: 0.25rem;
   outline: none;
@@ -44,8 +68,7 @@
 
 .submit-button:hover {
   background-color: rgba(255, 255, 255, 0.8);
-  border: 1px solid black;
-  border-radius: 15px;
+  border: 1px solid rgb(236, 118, 104);
   color: black;
 }
 

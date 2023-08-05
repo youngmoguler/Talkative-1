@@ -41,6 +41,8 @@ export default class SignUpForm extends Component {
     return (
       <div>
         <div className="form-container">
+          <div className="blur-box"></div>
+
           <form autoComplete="off" onSubmit={this.handleSubmit}>
             <label> Sign Up! </label>
             <input
